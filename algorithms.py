@@ -28,13 +28,14 @@ def bfs(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list):
         fringe.pop(0)
     # Backtrack
     pathFound = []
-    pathFound.append(expanded[-1])
-    backtracking = True
-    while(backtracking):
-        if pathFound[0].parent != None:
-            pathFound.insert(0, pathFound[0].parent)
-        else:
-            backtracking = False
+    if foundGoal:
+        pathFound.append(expanded[-1])
+        backtracking = True
+        while(backtracking):
+            if pathFound[0].parent != None:
+                pathFound.insert(0, pathFound[0].parent)
+            else:
+                backtracking = False
     return pathFound
 
 def dfs(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list):
@@ -65,13 +66,14 @@ def dfs(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list):
         fringe.pop(0)
     # Backtrack
     pathFound = []
-    pathFound.append(expanded[-1])
-    backtracking = True
-    while(backtracking):
-        if pathFound[0].parent != None:
-            pathFound.insert(0, pathFound[0].parent)
-        else:
-            backtracking = False
+    if foundGoal:
+        pathFound.append(expanded[-1])
+        backtracking = True
+        while(backtracking):
+            if pathFound[0].parent != None:
+                pathFound.insert(0, pathFound[0].parent)
+            else:
+                backtracking = False
     return pathFound
 
 def idsHelper(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list, depth: int):
@@ -114,13 +116,14 @@ def ids(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list):
             break
     # Backtrack
     pathFound = []
-    pathFound.append(expanded[-1])
-    backtracking = True
-    while(backtracking):
-        if pathFound[0].parent != None:
-            pathFound.insert(0, pathFound[0].parent)
-        else:
-            backtracking = False
+    if foundGoal:
+        pathFound.append(expanded[-1])
+        backtracking = True
+        while(backtracking):
+            if pathFound[0].parent != None:
+                pathFound.insert(0, pathFound[0].parent)
+            else:
+                backtracking = False
     return pathFound
 
 def greedy(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list):
@@ -138,6 +141,8 @@ def greedy(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list
             if fringe[i].heuristic < currentMinH:
                 currentMinH = fringe[i].heuristic
                 currentExpanding = i
+        if currentExpanding < 0:
+            break
         expand(fringe[currentExpanding], goal, forbidden)
         alreadyExpanded = False
         for i in range(len(expanded)):
@@ -155,16 +160,16 @@ def greedy(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list
             for i in range(len(fringe[currentExpanding].children)):
                 fringe.append(fringe[currentExpanding].children[i])
         fringe.pop(currentExpanding)
-        pass
     # Backtrack
     pathFound = []
-    pathFound.append(expanded[-1])
-    backtracking = True
-    while(backtracking):
-        if pathFound[0].parent != None:
-            pathFound.insert(0, pathFound[0].parent)
-        else:
-            backtracking = False
+    if foundGoal:
+        pathFound.append(expanded[-1])
+        backtracking = True
+        while(backtracking):
+            if pathFound[0].parent != None:
+                pathFound.insert(0, pathFound[0].parent)
+            else:
+                backtracking = False
     return pathFound
 
 def aStar(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list):
@@ -182,6 +187,8 @@ def aStar(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list)
             if fringe[i].heuristic + fringe[i].depth < currentMinF:
                 currentMinF = fringe[i].heuristic + fringe[i].depth
                 currentExpanding = i
+        if currentExpanding < 0:
+            break
         expand(fringe[currentExpanding], goal, forbidden)
         alreadyExpanded = False
         for i in range(len(expanded)):
@@ -199,17 +206,65 @@ def aStar(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list)
             for i in range(len(fringe[currentExpanding].children)):
                 fringe.append(fringe[currentExpanding].children[i])
         fringe.pop(currentExpanding)
-        pass
     # Backtrack
     pathFound = []
-    pathFound.append(expanded[-1])
-    backtracking = True
-    while(backtracking):
-        if pathFound[0].parent != None:
-            pathFound.insert(0, pathFound[0].parent)
-        else:
-            backtracking = False
+    if foundGoal:
+        pathFound.append(expanded[-1])
+        backtracking = True
+        while(backtracking):
+            if pathFound[0].parent != None:
+                pathFound.insert(0, pathFound[0].parent)
+            else:
+                backtracking = False
     return pathFound
 
 def hillClimbing(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list):
-    pass
+    expand(node, goal, forbidden)
+    expanded.append(node)
+    foundGoal = False
+    if node.data == goal:
+        foundGoal == True
+    for i in range(len(node.children)):
+        fringe.append(node.children[i])
+    heuristicValue = 0
+    for j in range(len(node.data)):
+        heuristicValue += abs(int(node.data[j]) - int(goal[j]))
+    node.heuristic = heuristicValue
+    bestV = node.heuristic
+    while(len(fringe) > 0 and len(expanded) <= 1000 and not foundGoal):
+        currentExpanding = -1
+        currentMinH = 1000
+        for i in range(len(fringe) - 1, -1, -1):
+            if fringe[i].heuristic < bestV:
+                bestV = fringe[i].heuristic
+                currentExpanding = i
+        if currentExpanding < 0:
+            break
+        expand(fringe[currentExpanding], goal, forbidden)
+        alreadyExpanded = False
+        for i in range(len(expanded)):
+            if compare(fringe[currentExpanding], expanded[i]):
+                alreadyExpanded = True
+                break
+        if alreadyExpanded:
+            fringe.pop(currentExpanding)
+            continue
+        expanded.append(fringe[currentExpanding])
+        if fringe[currentExpanding].data == goal:
+            foundGoal = True
+            break
+        else:
+            for i in range(len(fringe[currentExpanding].children)):
+                fringe.append(fringe[currentExpanding].children[i])
+        fringe.pop(currentExpanding)
+    # Backtrack
+    pathFound = []
+    if foundGoal:
+        pathFound.append(expanded[-1])
+        backtracking = True
+        while(backtracking):
+            if pathFound[0].parent != None:
+                pathFound.insert(0, pathFound[0].parent)
+            else:
+                backtracking = False
+    return pathFound

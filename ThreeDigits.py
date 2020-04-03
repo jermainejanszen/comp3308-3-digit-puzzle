@@ -46,7 +46,7 @@ else:
 
 # Format output
 foundSolution = True
-if expanded[-1] != goalState:
+if expanded[-1].data != goalState:
     foundSolution = False
 
 pathFoundValues = []
