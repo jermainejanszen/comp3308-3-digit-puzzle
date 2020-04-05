@@ -8,7 +8,7 @@ def bfs(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list):
         foundGoal == True
     for i in range(len(node.children)):
         fringe.append(node.children[i])
-    while(len(fringe) > 0 and len(expanded) <= 1000 and not foundGoal):
+    while(len(fringe) > 0 and len(expanded) < 1000 and not foundGoal):
         expand(fringe[0], goal, forbidden)
         alreadyExpanded = False
         for i in range(len(expanded)):
@@ -46,7 +46,7 @@ def dfs(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list):
         foundGoal == True
     for i in range(len(node.children)):
         fringe.append(node.children[i])
-    while(len(fringe) > 0 and len(expanded) <= 1000 and not foundGoal):
+    while(len(fringe) > 0 and len(expanded) < 1000 and not foundGoal):
         expand(fringe[0], goal, forbidden)
         alreadyExpanded = False
         for i in range(len(expanded)):
@@ -84,7 +84,7 @@ def idsHelper(node: Tree, goal: list, forbidden: list, fringe: list, expanded: l
         foundGoal == True
     for i in range(len(node.children)):
         fringe.append(node.children[i])
-    while(len(fringe) > 0 and len(expanded) <= 1000 and not foundGoal):
+    while(len(fringe) > 0 and len(expanded) < 1000 and not foundGoal):
         if fringe[0].depth > depth:
             fringe.pop(0)
             continue
@@ -109,10 +109,13 @@ def idsHelper(node: Tree, goal: list, forbidden: list, fringe: list, expanded: l
     return foundGoal
 
 def ids(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list):
+    foundGoal = False
     for i in range(1000):
         fringe.clear()
         foundGoal = idsHelper(node, goal, forbidden, fringe, expanded, i)
         if foundGoal:
+            break
+        elif len(expanded) == 1000:
             break
     # Backtrack
     pathFound = []
@@ -134,7 +137,7 @@ def greedy(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list
         foundGoal == True
     for i in range(len(node.children)):
         fringe.append(node.children[i])
-    while(len(fringe) > 0 and len(expanded) <= 1000 and not foundGoal):
+    while(len(fringe) > 0 and len(expanded) < 1000 and not foundGoal):
         currentExpanding = -1
         currentMinH = 1000
         for i in range(len(fringe) - 1, -1, -1):
@@ -180,7 +183,7 @@ def aStar(node: Tree, goal: list, forbidden: list, fringe: list, expanded: list)
         foundGoal == True
     for i in range(len(node.children)):
         fringe.append(node.children[i])
-    while(len(fringe) > 0 and len(expanded) <= 1000 and not foundGoal):
+    while(len(fringe) > 0 and len(expanded) < 1000 and not foundGoal):
         currentExpanding = -1
         currentMinF = 1000
         for i in range(len(fringe) - 1, -1, -1):
@@ -231,7 +234,7 @@ def hillClimbing(node: Tree, goal: list, forbidden: list, fringe: list, expanded
         heuristicValue += abs(int(node.data[j]) - int(goal[j]))
     node.heuristic = heuristicValue
     bestV = node.heuristic
-    while(len(fringe) > 0 and len(expanded) <= 1000 and not foundGoal):
+    while(len(fringe) > 0 and len(expanded) < 1000 and not foundGoal):
         currentExpanding = -1
         currentMinH = 1000
         for i in range(len(fringe) - 1, -1, -1):
