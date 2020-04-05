@@ -54,7 +54,16 @@ def expand(node: Tree, goal, forbidden):
 
 def compare(node1: Tree, node2: Tree):
     areEqual = False
-    if node1.data == node2.data and node1.children == node2.children:
-        areEqual = True
+    if node1.data == node2.data:
+        node1Data = []
+        for child in node1.children:
+            node1Data.append(child.data)
+        hasDifference = False
+        for child in node2.children:
+            if not child.data in node1Data:
+                hasDifference = True
+                break
+        if not hasDifference:
+            areEqual = True
     return areEqual
     
